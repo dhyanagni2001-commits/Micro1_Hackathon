@@ -1,0 +1,12 @@
+# Dhyan: fill in the exact IDs and prices, then set enabled: true on what you run.
+# Prices are USD per million tokens. A null price reports cost as n/a.
+defaults:
+  temperature: 0        # falls back to the model default if the API rejects it (logged per trial)
+  max_tokens: 16000
+trials: 5
+concurrency: 6
+models:
+  - {name: anthropic-frontier, provider: anthropic, model: claude-opus-5-5, usd_per_mtok_input: null, usd_per_mtok_output: null}
+  - {name: openai-frontier, provider: openai, model: TODO-openai-model-id, usd_per_mtok_input: null, usd_per_mtok_output: null}
+  - {name: google-frontier, provider: google, model: TODO-google-model-id, usd_per_mtok_input: null, usd_per_mtok_output: null}
+  - {name: smaller-model, provider: anthropic, model: claude-haiku-5-5, usd_per_mtok_input: null, usd_per_mtok_output: null}

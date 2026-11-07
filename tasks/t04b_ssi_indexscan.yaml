@@ -1,0 +1,25 @@
+id: t04b_ssi_indexscan
+title: No SSI abort on disjoint rows with an index scan
+isolation: serializable
+sessions: [A, B]
+setup: |
+  CREATE TABLE items (id int PRIMARY KEY, val int);
+  INSERT INTO items VALUES (1, 10), (2, 20), (3, 30), (4, 40);
+  ANALYZE items;
+schedule:
+  - {step: 1, session: A, sql: "SET enable_seqscan = off"}
+  - {step: 2, session: B, sql: "SET enable_seqscan = off"}
+  - {step: 3, session: A, sql: "BEGIN"}
+  - {step: 4, session: B, sql: "BEGIN"}
+  - {step: 5, session: A, sql: "SELECT val FROM items WHERE id = 1"}
+  - {step: 6, session: B, sql: "SELECT val FROM items WHERE id = 2"}
+  - {step: 7, session: A, sql: "UPDATE items SET val = val + 1 WHERE id = 1"}
+  - {step: 8, session: B, sql: "UPDATE items SET val = val + 1 WHERE id = 2"}
+  - {step: 9, session: A, sql: "COMMIT"}
+  - {step: 10, session: B, sql: "COMMIT"}
+observe_steps: [5, 6]
+final_query: "SELECT id, val FROM items ORDER BY id"
+why_hard: >
+  Hypothesis (CLAUDE.md section 8): index scans take finer predicate locks, so the same disjoint
+  transactions both commit. Only the plan differs from t04a.
+category: ssi_implementation

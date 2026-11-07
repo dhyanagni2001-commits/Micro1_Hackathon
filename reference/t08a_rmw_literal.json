@@ -1,0 +1,72 @@
+{
+ "committed": {
+  "A": true,
+  "B": true
+ },
+ "final_state": [
+  [
+   1,
+   90
+  ]
+ ],
+ "observed": {
+  "3": [
+   [
+    100
+   ]
+  ],
+  "4": [
+   [
+    100
+   ]
+  ]
+ },
+ "steps": [
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 1
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 2
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 3
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 4
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 5
+  },
+  {
+   "outcome": "blocked_then_ok",
+   "sqlstate": null,
+   "step": 6
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 7
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 8
+  }
+ ],
+ "meta": {
+  "id": "t08a_rmw_literal",
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+  "runs": 20,
+  "deadlock_timeout": "1s"
+ }
+}

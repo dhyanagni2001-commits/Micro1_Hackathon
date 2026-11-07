@@ -1,0 +1,22 @@
+id: t03b_ser_write_skew
+title: On-call write skew aborts one transaction under SERIALIZABLE
+isolation: serializable
+sessions: [A, B]
+setup: |
+  CREATE TABLE doctors (name text PRIMARY KEY, on_call boolean);
+  INSERT INTO doctors VALUES ('alice', true), ('bob', true);
+schedule:
+  - {step: 1, session: A, sql: "BEGIN"}
+  - {step: 2, session: B, sql: "BEGIN"}
+  - {step: 3, session: A, sql: "SELECT count(*) FROM doctors WHERE on_call"}
+  - {step: 4, session: B, sql: "SELECT count(*) FROM doctors WHERE on_call"}
+  - {step: 5, session: A, sql: "UPDATE doctors SET on_call = false WHERE name = 'alice'"}
+  - {step: 6, session: B, sql: "UPDATE doctors SET on_call = false WHERE name = 'bob'"}
+  - {step: 7, session: A, sql: "COMMIT"}
+  - {step: 8, session: B, sql: "COMMIT"}
+observe_steps: [3, 4]
+final_query: "SELECT name, on_call FROM doctors ORDER BY name"
+why_hard: >
+  Hypothesis (CLAUDE.md section 8): one transaction gets 40001. The graded detail is which one
+  aborts and at which step.
+category: write_skew

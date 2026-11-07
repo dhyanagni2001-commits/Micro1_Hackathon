@@ -1,0 +1,25 @@
+id: t04a_ssi_seqscan
+title: SSI false positive on disjoint rows with a sequential scan
+isolation: serializable
+sessions: [A, B]
+setup: |
+  CREATE TABLE items (id int PRIMARY KEY, val int);
+  INSERT INTO items VALUES (1, 10), (2, 20), (3, 30), (4, 40);
+  ANALYZE items;
+schedule:
+  - {step: 1, session: A, sql: "SET enable_seqscan = on"}
+  - {step: 2, session: B, sql: "SET enable_seqscan = on"}
+  - {step: 3, session: A, sql: "BEGIN"}
+  - {step: 4, session: B, sql: "BEGIN"}
+  - {step: 5, session: A, sql: "SELECT val FROM items WHERE id = 1"}
+  - {step: 6, session: B, sql: "SELECT val FROM items WHERE id = 2"}
+  - {step: 7, session: A, sql: "UPDATE items SET val = val + 1 WHERE id = 1"}
+  - {step: 8, session: B, sql: "UPDATE items SET val = val + 1 WHERE id = 2"}
+  - {step: 9, session: A, sql: "COMMIT"}
+  - {step: 10, session: B, sql: "COMMIT"}
+observe_steps: [5, 6]
+final_query: "SELECT id, val FROM items ORDER BY id"
+why_hard: >
+  Hypothesis (CLAUDE.md section 8): a seq scan takes a relation-level predicate lock, so logically
+  disjoint transactions conflict and one gets a false-positive 40001.
+category: ssi_implementation

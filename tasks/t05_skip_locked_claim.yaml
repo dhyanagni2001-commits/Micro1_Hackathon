@@ -1,0 +1,26 @@
+id: t05_skip_locked_claim
+title: SKIP LOCKED workers next to a plain SELECT worker double claim
+isolation: read committed
+sessions: [A, B, C]
+setup: |
+  CREATE TABLE jobs (id int PRIMARY KEY, status text, worker text);
+  INSERT INTO jobs VALUES (1, 'queued', NULL), (2, 'queued', NULL), (3, 'queued', NULL);
+schedule:
+  - {step: 1, session: A, sql: "BEGIN"}
+  - {step: 2, session: B, sql: "BEGIN"}
+  - {step: 3, session: C, sql: "BEGIN"}
+  - {step: 4, session: A, sql: "SELECT id FROM jobs WHERE status = 'queued' ORDER BY id LIMIT 1 FOR UPDATE SKIP LOCKED"}
+  - {step: 5, session: B, sql: "SELECT id FROM jobs WHERE status = 'queued' ORDER BY id LIMIT 1 FOR UPDATE SKIP LOCKED"}
+  - {step: 6, session: C, sql: "SELECT id FROM jobs WHERE status = 'queued' ORDER BY id LIMIT 1"}
+  - {step: 7, session: A, sql: "UPDATE jobs SET status = 'claimed', worker = 'A' WHERE id = 1"}
+  - {step: 8, session: B, sql: "UPDATE jobs SET status = 'claimed', worker = 'B' WHERE id = 2"}
+  - {step: 9, session: C, sql: "UPDATE jobs SET status = 'claimed', worker = 'C' WHERE id = 1"}
+  - {step: 10, session: A, sql: "COMMIT"}
+  - {step: 11, session: B, sql: "COMMIT"}
+  - {step: 12, session: C, sql: "COMMIT"}
+observe_steps: [4, 5, 6]
+final_query: "SELECT id, status, worker FROM jobs ORDER BY id"
+why_hard: >
+  Hypothesis (CLAUDE.md section 8): A and B claim different jobs. C reads job 1 without a lock,
+  blocks on A's row, then overwrites it after A commits, which is a double claim.
+category: skip_locked

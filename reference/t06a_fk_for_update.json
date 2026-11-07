@@ -1,0 +1,63 @@
+{
+ "committed": {
+  "A": true,
+  "B": true
+ },
+ "final_state": [
+  [
+   1,
+   "renamed",
+   10
+  ]
+ ],
+ "observed": {
+  "3": [
+   [
+    1
+   ]
+  ]
+ },
+ "steps": [
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 1
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 2
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 3
+  },
+  {
+   "outcome": "blocked_then_ok",
+   "sqlstate": null,
+   "step": 4
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 5
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 6
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 7
+  }
+ ],
+ "meta": {
+  "id": "t06a_fk_for_update",
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+  "runs": 20,
+  "deadlock_timeout": "1s"
+ }
+}

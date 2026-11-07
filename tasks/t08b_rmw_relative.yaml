@@ -1,0 +1,22 @@
+id: t08b_rmw_relative
+title: Read-modify-write with a relative update keeps both changes
+isolation: read committed
+sessions: [A, B]
+setup: |
+  CREATE TABLE accounts (id int PRIMARY KEY, balance int);
+  INSERT INTO accounts VALUES (1, 100);
+schedule:
+  - {step: 1, session: A, sql: "BEGIN"}
+  - {step: 2, session: B, sql: "BEGIN"}
+  - {step: 3, session: A, sql: "SELECT balance FROM accounts WHERE id = 1"}
+  - {step: 4, session: B, sql: "SELECT balance FROM accounts WHERE id = 1"}
+  - {step: 5, session: A, sql: "UPDATE accounts SET balance = balance - 10 WHERE id = 1"}
+  - {step: 6, session: B, sql: "UPDATE accounts SET balance = balance - 10 WHERE id = 1"}
+  - {step: 7, session: A, sql: "COMMIT"}
+  - {step: 8, session: B, sql: "COMMIT"}
+observe_steps: [3, 4]
+final_query: "SELECT id, balance FROM accounts ORDER BY id"
+why_hard: >
+  Hypothesis (CLAUDE.md section 8): B blocks, then re-reads the committed row version, so the final
+  balance is 80 even though both sessions read 100.
+category: lost_update

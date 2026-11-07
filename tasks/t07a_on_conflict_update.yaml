@@ -1,0 +1,19 @@
+id: t07a_on_conflict_update
+title: Concurrent ON CONFLICT DO UPDATE on the same new key
+isolation: read committed
+sessions: [A, B]
+setup: |
+  CREATE TABLE counters (k text PRIMARY KEY, v int);
+schedule:
+  - {step: 1, session: A, sql: "BEGIN"}
+  - {step: 2, session: B, sql: "BEGIN"}
+  - {step: 3, session: A, sql: "INSERT INTO counters VALUES ('x', 1) ON CONFLICT (k) DO UPDATE SET v = counters.v + EXCLUDED.v RETURNING k, v"}
+  - {step: 4, session: B, sql: "INSERT INTO counters VALUES ('x', 5) ON CONFLICT (k) DO UPDATE SET v = counters.v + EXCLUDED.v RETURNING k, v"}
+  - {step: 5, session: A, sql: "COMMIT"}
+  - {step: 6, session: B, sql: "COMMIT"}
+observe_steps: [3, 4]
+final_query: "SELECT k, v FROM counters ORDER BY k"
+why_hard: >
+  Hypothesis (CLAUDE.md section 8): B blocks on A's uncommitted key, then updates A's committed row
+  and RETURNING shows the sum.
+category: on_conflict

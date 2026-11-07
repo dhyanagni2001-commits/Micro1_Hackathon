@@ -1,0 +1,145 @@
+{
+ "t01_rc_evalplanqual": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 22.0,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t02_rr_concurrent_update": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 22.0,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t03a_rr_write_skew": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 1.5,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t03b_ser_write_skew": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 1.5,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t04a_ssi_seqscan": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 1.4,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t04b_ssi_indexscan": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 1.4,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t05_skip_locked_claim": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 22.0,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t06a_fk_for_update": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 25.8,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t06b_fk_for_no_key_update": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 1.1,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t07a_on_conflict_update": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 21.8,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t07b_on_conflict_nothing": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 21.8,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t08a_rmw_literal": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 21.8,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t08b_rmw_relative": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 21.7,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ }
+}
