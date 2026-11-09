@@ -1,0 +1,26 @@
+id: t16_rc_three_way_recheck
+title: One blocked UPDATE re-checked against two different lockers
+isolation: read committed
+sessions: [A, B, C]
+setup: |
+  CREATE TABLE accounts (id int PRIMARY KEY, balance int);
+  INSERT INTO accounts VALUES (1, 100), (2, 80), (3, 120);
+schedule:
+  - {step: 1, session: A, sql: "BEGIN"}
+  - {step: 2, session: B, sql: "BEGIN"}
+  - {step: 3, session: C, sql: "BEGIN"}
+  - {step: 4, session: A, sql: "UPDATE accounts SET balance = balance - 50 WHERE id = 1"}
+  - {step: 5, session: B, sql: "UPDATE accounts SET balance = balance + 10 WHERE balance >= 100"}
+  - {step: 6, session: C, sql: "UPDATE accounts SET balance = balance * 2 WHERE id = 3"}
+  - {step: 7, session: A, sql: "COMMIT"}
+  - {step: 8, session: C, sql: "SELECT sum(balance) FROM accounts"}
+  - {step: 9, session: C, sql: "COMMIT"}
+  - {step: 10, session: B, sql: "SELECT id, balance FROM accounts ORDER BY id"}
+  - {step: 11, session: B, sql: "COMMIT"}
+observe_steps: [8, 10]
+final_query: "SELECT id, balance FROM accounts ORDER BY id"
+why_hard: >
+  Hypothesis (Claude draft, Dhyan to review): B blocks on row 1 before reaching row 3, so C locks row 3 freely.
+  After A commits, B drops row 1 on re-check and then blocks again on row 3. After C commits, B re-checks 240 and
+  adds 10. B's later SELECT sees every committed change.
+category: rc_recheck

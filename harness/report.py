@@ -29,9 +29,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--transcripts", default="transcripts")
     parser.add_argument("--out", default="results")
+    parser.add_argument("--config", default="config/models.yaml")
     args = parser.parse_args()
 
-    config = yaml.safe_load(Path("config/models.yaml").read_text())
+    config = yaml.safe_load(Path(args.config).read_text())
     configs = {m["name"]: m for m in config["models"]}
     by_model = defaultdict(lambda: defaultdict(list))
     for path in sorted(Path(args.transcripts).glob("*/*/*.json")):

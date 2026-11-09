@@ -1,0 +1,105 @@
+{
+ "committed": {
+  "A": true,
+  "B": true,
+  "C": true
+ },
+ "final_state": [
+  [
+   1,
+   50
+  ],
+  [
+   2,
+   80
+  ],
+  [
+   3,
+   250
+  ]
+ ],
+ "observed": {
+  "10": [
+   [
+    1,
+    50
+   ],
+   [
+    2,
+    80
+   ],
+   [
+    3,
+    250
+   ]
+  ],
+  "8": [
+   [
+    370
+   ]
+  ]
+ },
+ "steps": [
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 1
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 2
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 3
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 4
+  },
+  {
+   "outcome": "blocked_then_ok",
+   "sqlstate": null,
+   "step": 5
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 6
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 7
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 8
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 9
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 10
+  },
+  {
+   "outcome": "ok",
+   "sqlstate": null,
+   "step": 11
+  }
+ ],
+ "meta": {
+  "id": "t16_rc_three_way_recheck",
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+  "runs": 20,
+  "deadlock_timeout": "1s"
+ }
+}

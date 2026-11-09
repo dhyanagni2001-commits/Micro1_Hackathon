@@ -1,0 +1,97 @@
+{
+ "model_name": "openai-frontier",
+ "model_id_requested": "gpt-5.6-sol",
+ "task": "t14_rc_epq_semijoin",
+ "category": "rc_recheck",
+ "trial": 1,
+ "timestamp": "2026-11-08T22:25:18.860422+00:00",
+ "prompt": "Predict exactly what PostgreSQL does when the concurrent transactions below interleave.\n\nPostgreSQL version: PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit\nIsolation level (default_transaction_isolation in every session): read committed\nSessions: A, B. Each has its own connection. Transactions begin only at an explicit BEGIN step.\nEvery other setting is at its default unless the setup or schedule changes it. deadlock_timeout is 1s unless stated.\n\n## Execution model\nSteps are issued strictly in order. After issuing a step, the harness waits up to 1000 ms. If the statement has not returned by then, it is **blocked**, and the harness issues the next step. A blocked statement later either completes or errors when the lock it waits on is released. Steps of a session whose previous statement is still blocked are queued behind it.\n\nA queued step is issued as soon as the statement ahead of it finishes, and whether it counts as blocked is measured from that moment, not from its place in the schedule.\n\n## Setup (already committed before step 1)\n```sql\nCREATE TABLE accounts (id int PRIMARY KEY, balance int);\nINSERT INTO accounts VALUES (1, 100), (2, 500);\n```\n\n## Schedule\n```\n  1. [A] BEGIN\n  2. [B] BEGIN\n  3. [A] UPDATE accounts SET balance = balance + 50 WHERE id = 1\n  4. [B] UPDATE accounts SET balance = balance * 2 WHERE id IN (SELECT id FROM accounts WHERE balance < 120) RETURNING id, balance\n  5. [A] COMMIT\n  6. [B] COMMIT\n```\n\n## What to report\n- `steps`: exactly one entry for every step. `outcome` is one of:\n  - `ok`: returned within 1000 ms without an error\n  - `blocked_then_ok`: was blocked as defined above, then completed without an error\n  - `error`: raised an error within 1000 ms\n  - `blocked_then_error`: was blocked as defined above, then raised an error\n  `sqlstate` is the five-character SQLSTATE for an error outcome, and null otherwise.\n- `observed`: rows returned by these steps, keyed by step number as a string, each row as an array in column order: 4. A step that returns no rows, or that errors, has the value [].\n- `committed`: for each session, true if its transaction committed. A COMMIT that the server answers with ROLLBACK has outcome `ok` and counts as false here.\n- `final_state`: rows returned by this query, run on a fresh connection after all sessions finish:\n```sql\nSELECT id, balance FROM accounts ORDER BY id\n```\n\n## Output format\nReturn only a JSON object, optionally inside a single ```json fence. Give one answer for each field. Use this shape (the values show the format only and say nothing about this schedule):\n```json\n{\n  \"steps\": [\n    {\"step\": 1, \"outcome\": \"ok\", \"sqlstate\": null},\n    {\"step\": 2, \"outcome\": \"blocked_then_error\", \"sqlstate\": \"XXXXX\"}\n  ],\n  \"observed\": {\"3\": [[10, \"text value\"]]},\n  \"committed\": {\"S1\": true, \"S2\": false},\n  \"final_state\": [[10, \"text value\"], [20, \"other\"]]\n}\n```\n",
+ "raw_output": "{\n  \"steps\": [\n    {\"step\": 1, \"outcome\": \"ok\", \"sqlstate\": null},\n    {\"step\": 2, \"outcome\": \"ok\", \"sqlstate\": null},\n    {\"step\": 3, \"outcome\": \"ok\", \"sqlstate\": null},\n    {\"step\": 4, \"outcome\": \"blocked_then_ok\", \"sqlstate\": null},\n    {\"step\": 5, \"outcome\": \"ok\", \"sqlstate\": null},\n    {\"step\": 6, \"outcome\": \"ok\", \"sqlstate\": null}\n  ],\n  \"observed\": {\n    \"4\": [[1, 300]]\n  },\n  \"committed\": {\n    \"A\": true,\n    \"B\": true\n  },\n  \"final_state\": [[1, 300], [2, 500]]\n}",
+ "parsed": {
+  "steps": [
+   {
+    "step": 1,
+    "outcome": "ok",
+    "sqlstate": null
+   },
+   {
+    "step": 2,
+    "outcome": "ok",
+    "sqlstate": null
+   },
+   {
+    "step": 3,
+    "outcome": "ok",
+    "sqlstate": null
+   },
+   {
+    "step": 4,
+    "outcome": "blocked_then_ok",
+    "sqlstate": null
+   },
+   {
+    "step": 5,
+    "outcome": "ok",
+    "sqlstate": null
+   },
+   {
+    "step": 6,
+    "outcome": "ok",
+    "sqlstate": null
+   }
+  ],
+  "observed": {
+   "4": [
+    [
+     1,
+     300
+    ]
+   ]
+  },
+  "committed": {
+   "A": true,
+   "B": true
+  },
+  "final_state": [
+   [
+    1,
+    300
+   ],
+   [
+    2,
+    500
+   ]
+  ]
+ },
+ "score": {
+  "score": 1.0,
+  "strict_pass": true,
+  "parse_error": false,
+  "components": {
+   "steps": 1.0,
+   "committed": 1.0,
+   "final_state": 1.0,
+   "observed": 1.0
+  },
+  "weights": {
+   "steps": 0.35,
+   "committed": 0.2,
+   "observed": 0.15,
+   "final_state": 0.3
+  },
+  "step_scores": {
+   "1": 1.0,
+   "2": 1.0,
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 1.0
+  }
+ },
+ "model_id_returned": null,
+ "input_tokens": 12759,
+ "output_tokens": 2132,
+ "temperature_used": null,
+ "temperature_note": "CLI run on a subscription login; temperature cannot be set",
+ "latency_s": 25.18
+}

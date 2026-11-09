@@ -1,0 +1,21 @@
+id: t15_rc_delete_reinsert
+title: Blocked UPDATE when the row is deleted and re-inserted
+isolation: read committed
+sessions: [A, B]
+setup: |
+  CREATE TABLE settings (k text PRIMARY KEY, v int);
+  INSERT INTO settings VALUES ('limit', 10);
+schedule:
+  - {step: 1, session: A, sql: "BEGIN"}
+  - {step: 2, session: B, sql: "BEGIN"}
+  - {step: 3, session: A, sql: "DELETE FROM settings WHERE k = 'limit'"}
+  - {step: 4, session: A, sql: "INSERT INTO settings VALUES ('limit', 20)"}
+  - {step: 5, session: B, sql: "UPDATE settings SET v = v + 1 WHERE k = 'limit' RETURNING k, v"}
+  - {step: 6, session: A, sql: "COMMIT"}
+  - {step: 7, session: B, sql: "COMMIT"}
+observe_steps: [5]
+final_query: "SELECT k, v FROM settings ORDER BY k"
+why_hard: >
+  Hypothesis (Claude draft, Dhyan to review): B waits on the old row version, finds it deleted and updates
+  nothing. It never sees A's re-inserted row, so the increment is silently lost.
+category: rc_recheck

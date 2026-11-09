@@ -1,12 +1,19 @@
-# Dhyan: fill in the exact IDs and prices, then set enabled: true on what you run.
-# Prices are USD per million tokens. A null price reports cost as n/a.
+# Free setup: Claude and Codex run through their subscription CLIs (no temperature control,
+# logged per trial). Gemini uses the free AI Studio key. The small model runs locally via llama-server.
+# Prices are USD per million tokens, for an estimated API-equivalent cost. Null reports n/a.
 defaults:
-  temperature: 0        # falls back to the model default if the API rejects it (logged per trial)
+  temperature: 0        # API providers only; falls back to the model default if rejected
   max_tokens: 16000
 trials: 5
-concurrency: 6
+concurrency: 8
 models:
-  - {name: anthropic-frontier, provider: anthropic, model: claude-opus-5-5, usd_per_mtok_input: null, usd_per_mtok_output: null}
-  - {name: openai-frontier, provider: openai, model: TODO-openai-model-id, usd_per_mtok_input: null, usd_per_mtok_output: null}
-  - {name: google-frontier, provider: google, model: TODO-google-model-id, usd_per_mtok_input: null, usd_per_mtok_output: null}
-  - {name: smaller-model, provider: anthropic, model: claude-haiku-5-5, usd_per_mtok_input: null, usd_per_mtok_output: null}
+  - {name: anthropic-frontier, provider: claude_cli, model: claude-opus-5-5, max_concurrency: 3,
+     usd_per_mtok_input: null, usd_per_mtok_output: null}
+  - {name: openai-frontier, provider: codex_cli, model: gpt-5.6-sol, max_concurrency: 3,
+     usd_per_mtok_input: null, usd_per_mtok_output: null}
+  # Free tier returned 429 (Pro) and 503 (Flash) on 2026-11-08. Enable once a call succeeds.
+  - {name: google-frontier, provider: google, model: gemini-3.1-pro-preview, enabled: false,
+     max_concurrency: 2, usd_per_mtok_input: null, usd_per_mtok_output: null}
+  # Start it first: llama-server -hf Qwen/Qwen3-4B-GGUF:Q4_K_M --port 8088 -c 32768 --jinja
+  - {name: local-qwen3-4b, provider: openai, model: qwen3-4b, base_url: "http://127.0.0.1:8088/v1",
+     api_key_env: none, max_concurrency: 2, max_tokens: 12000, usd_per_mtok_input: 0, usd_per_mtok_output: 0}

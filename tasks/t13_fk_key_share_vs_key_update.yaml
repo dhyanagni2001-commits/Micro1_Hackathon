@@ -1,0 +1,22 @@
+id: t13_fk_key_share_vs_key_update
+title: Uncommitted child insert against parent non-key and key updates
+isolation: read committed
+sessions: [A, B]
+setup: |
+  CREATE TABLE parents (id int PRIMARY KEY, name text);
+  CREATE TABLE children (id int PRIMARY KEY, parent_id int REFERENCES parents (id));
+  INSERT INTO parents VALUES (1, 'p1');
+schedule:
+  - {step: 1, session: A, sql: "BEGIN"}
+  - {step: 2, session: B, sql: "BEGIN"}
+  - {step: 3, session: A, sql: "INSERT INTO children VALUES (10, 1)"}
+  - {step: 4, session: B, sql: "UPDATE parents SET name = 'renamed' WHERE id = 1"}
+  - {step: 5, session: B, sql: "UPDATE parents SET id = 2 WHERE id = 1"}
+  - {step: 6, session: A, sql: "COMMIT"}
+  - {step: 7, session: B, sql: "COMMIT"}
+observe_steps: []
+final_query: "SELECT p.id, p.name, c.id FROM parents p LEFT JOIN children c ON c.parent_id = p.id ORDER BY p.id, c.id"
+why_hard: >
+  Hypothesis (Claude draft, Dhyan to review): the FK check's KEY SHARE lock lets the non-key update through,
+  blocks the key update, and once A commits the key update fails with 23503, rolling back the rename too.
+category: lock_strength

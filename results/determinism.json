@@ -141,5 +141,116 @@
   ],
   "runtime_s": 21.7,
   "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t09_rc_lock_limit_recheck": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 22.4,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t10_sequence_gaps": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 1.8,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t11_rc_partition_move": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 22.4,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t12_rr_select_for_update": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 1.8,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t13_fk_key_share_vs_key_update": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 22.3,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t14_rc_epq_semijoin": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 22.3,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t15_rc_delete_reinsert": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 21.5,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t16_rc_three_way_recheck": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 34.0,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t17_ssi_read_only_anomaly": {
+  "stable": true,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 1,
+  "variant_counts": [
+   20
+  ],
+  "runtime_s": 1.3,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+ },
+ "t18_upsert_after_delete": {
+  "stable": false,
+  "runs": 20,
+  "invalid_runs": 0,
+  "distinct_outcomes": 2,
+  "variant_counts": [
+   9,
+   11
+  ],
+  "runtime_s": 45.9,
+  "pg_version": "PostgreSQL 17.7 (Debian 17.7-3.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
  }
 }

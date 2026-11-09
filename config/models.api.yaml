@@ -1,0 +1,14 @@
+# Same lineup through the official APIs instead of subscription CLIs.
+# Use it with: make eval CONFIG=config/models.api.yaml   (keys: ANTHROPIC_API_KEY, OPENAI_API_KEY, GOOGLE_API_KEY)
+defaults:
+  temperature: 0
+  max_tokens: 16000
+trials: 5
+concurrency: 8
+models:
+  - {name: anthropic-frontier, provider: anthropic, model: claude-opus-5-5, max_concurrency: 4,
+     usd_per_mtok_input: null, usd_per_mtok_output: null}
+  - {name: openai-frontier, provider: openai, model: gpt-5.6-sol, max_concurrency: 4,
+     usd_per_mtok_input: null, usd_per_mtok_output: null}
+  - {name: google-frontier, provider: google, model: gemini-3.1-pro-preview, max_concurrency: 2,
+     usd_per_mtok_input: null, usd_per_mtok_output: null}

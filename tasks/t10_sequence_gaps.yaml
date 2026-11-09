@@ -1,0 +1,22 @@
+id: t10_sequence_gaps
+title: Sequence values survive rollback and ON CONFLICT DO NOTHING
+isolation: read committed
+sessions: [A, B]
+setup: |
+  CREATE TABLE orders (id serial PRIMARY KEY, sku text UNIQUE);
+  INSERT INTO orders (sku) VALUES ('a');
+schedule:
+  - {step: 1, session: A, sql: "BEGIN"}
+  - {step: 2, session: B, sql: "BEGIN"}
+  - {step: 3, session: A, sql: "INSERT INTO orders (sku) VALUES ('b') RETURNING id"}
+  - {step: 4, session: B, sql: "INSERT INTO orders (sku) VALUES ('c') RETURNING id"}
+  - {step: 5, session: A, sql: "ROLLBACK"}
+  - {step: 6, session: B, sql: "INSERT INTO orders (sku) VALUES ('a') ON CONFLICT (sku) DO NOTHING RETURNING id"}
+  - {step: 7, session: B, sql: "INSERT INTO orders (sku) VALUES ('d') RETURNING id"}
+  - {step: 8, session: B, sql: "COMMIT"}
+observe_steps: [3, 4, 6, 7]
+final_query: "SELECT id, sku FROM orders ORDER BY id"
+why_hard: >
+  Hypothesis (Claude draft, Dhyan to review): nextval is not transactional, so A's rolled-back value and
+  the value drawn by the skipped ON CONFLICT insert both leave gaps.
+category: sequences

@@ -1,0 +1,27 @@
+25 trials to run, 2 models, 22 tasks
+anthropic-frontier       t16_rc_three_way_recheck       trial 3 score 1.000
+anthropic-frontier       t16_rc_three_way_recheck       trial 2 score 1.000
+anthropic-frontier       t16_rc_three_way_recheck       trial 1 score 1.000
+anthropic-frontier       t16_rc_three_way_recheck       trial 5 score 1.000
+anthropic-frontier       t16_rc_three_way_recheck       trial 4 score 1.000
+anthropic-frontier       t17_ssi_read_only_anomaly      trial 1 score 1.000
+openai-frontier          t03b_ser_write_skew            trial 1 score 1.000
+anthropic-frontier       t17_ssi_read_only_anomaly      trial 2 score 1.000
+anthropic-frontier       t17_ssi_read_only_anomaly      trial 3 score 1.000
+anthropic-frontier       t17_ssi_read_only_anomaly      trial 4 score 1.000
+openai-frontier          t03b_ser_write_skew            trial 3 score 1.000
+openai-frontier          t11_rc_partition_move          trial 2 score 1.000
+anthropic-frontier       t17_ssi_read_only_anomaly      trial 5 score 1.000
+openai-frontier          t11_rc_partition_move          trial 3 score 1.000
+openai-frontier          t16_rc_three_way_recheck       trial 1 score 1.000
+openai-frontier          t16_rc_three_way_recheck       trial 2 score 1.000
+openai-frontier          t16_rc_three_way_recheck       trial 3 score 1.000
+FAILED openai-frontier t04a_ssi_seqscan trial 3: codex used a tool (web_search); trial rejected
+openai-frontier          t16_rc_three_way_recheck       trial 4 score 1.000
+openai-frontier          t16_rc_three_way_recheck       trial 5 score 1.000
+openai-frontier          t17_ssi_read_only_anomaly      trial 1 score 1.000
+openai-frontier          t17_ssi_read_only_anomaly      trial 2 score 1.000
+openai-frontier          t17_ssi_read_only_anomaly      trial 3 score 1.000
+openai-frontier          t17_ssi_read_only_anomaly      trial 4 score 1.000
+FAILED openai-frontier t17_ssi_read_only_anomaly trial 5: codex used a tool (web_search); trial rejected
+done, 23 ok, 2 failed

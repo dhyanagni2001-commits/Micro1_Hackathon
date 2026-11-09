@@ -6,6 +6,7 @@ import datetime as dt
 import json
 import os
 import sys
+import threading
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -17,11 +18,15 @@ from harness.models import ProviderError, complete, key_env
 from harness.prompt import pg_version, render
 
 
+LIMITS = {}
+
+
 def run_trial(job) -> str:
     cfg, task, reference, trial, path, version = job
     prompt = render(task, version)
     try:
-        reply = complete(cfg, prompt)
+        with LIMITS[cfg["name"]]:
+            reply = complete(cfg, prompt)
     except (ProviderError, KeyError, ValueError, IndexError) as exc:
         print(f"FAILED {cfg['name']} {task['id']} trial {trial}: {exc}", file=sys.stderr)
         return "failed"
@@ -54,7 +59,8 @@ def main():
     config = yaml.safe_load(Path(args.config).read_text())
     models = [m for m in config["models"] if m.get("enabled", True)]
     models = models[: args.max_models] if args.max_models else models
-    missing = sorted({key_env(m) for m in models if not os.environ.get(key_env(m))})
+    missing = sorted({key_env(m) for m in models
+                      if key_env(m) and not os.environ.get(key_env(m))})
     placeholders = [m["name"] for m in models if "TODO" in str(m["model"])]
     if missing or placeholders or not models:
         print(f"Cannot run. Missing env vars: {missing}. Model IDs to fill in: {placeholders}.",
@@ -77,6 +83,7 @@ def main():
     jobs = []
     for cfg in models:
         cfg = {**config.get("defaults", {}), **cfg}
+        LIMITS[cfg["name"]] = threading.Semaphore(cfg.get("max_concurrency", 3))
         for task in tasks:
             for trial in range(1, trials + 1):
                 path = Path(args.transcripts) / cfg["name"] / task["id"] / f"{trial}.json"

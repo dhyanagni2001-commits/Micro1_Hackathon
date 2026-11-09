@@ -1,0 +1,22 @@
+id: t11_rc_partition_move
+title: Concurrent update of a row moved to another partition
+isolation: read committed
+sessions: [A, B]
+setup: |
+  CREATE TABLE tickets (id int, status text, hits int) PARTITION BY LIST (status);
+  CREATE TABLE tickets_open PARTITION OF tickets FOR VALUES IN ('open');
+  CREATE TABLE tickets_closed PARTITION OF tickets FOR VALUES IN ('closed');
+  INSERT INTO tickets VALUES (1, 'open', 0), (2, 'open', 0);
+schedule:
+  - {step: 1, session: A, sql: "BEGIN"}
+  - {step: 2, session: B, sql: "BEGIN"}
+  - {step: 3, session: A, sql: "UPDATE tickets SET status = 'closed' WHERE id = 1"}
+  - {step: 4, session: B, sql: "UPDATE tickets SET hits = hits + 1 WHERE id IN (1, 2)"}
+  - {step: 5, session: A, sql: "COMMIT"}
+  - {step: 6, session: B, sql: "COMMIT"}
+observe_steps: []
+final_query: "SELECT id, status, hits FROM tickets ORDER BY id"
+why_hard: >
+  Hypothesis (Claude draft, Dhyan to review): even under READ COMMITTED, B fails with 40001 because the row it
+  waited on moved partitions, so the re-check of the plain case does not apply and row 2's update is lost too.
+category: rc_recheck

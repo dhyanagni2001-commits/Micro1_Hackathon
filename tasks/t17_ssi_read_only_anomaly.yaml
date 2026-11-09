@@ -1,0 +1,28 @@
+id: t17_ssi_read_only_anomaly
+title: SERIALIZABLE batch report where the read-only transaction completes the cycle
+isolation: serializable
+sessions: [A, B, C]
+setup: |
+  CREATE TABLE control (id int PRIMARY KEY, batch int);
+  CREATE TABLE receipts (id int PRIMARY KEY, batch int, amount int);
+  INSERT INTO control VALUES (1, 1);
+  INSERT INTO receipts VALUES (1, 1, 100), (2, 1, 200);
+schedule:
+  - {step: 1, session: B, sql: "BEGIN"}
+  - {step: 2, session: B, sql: "SELECT batch FROM control WHERE id = 1"}
+  - {step: 3, session: B, sql: "INSERT INTO receipts VALUES (3, 1, 50)"}
+  - {step: 4, session: C, sql: "BEGIN"}
+  - {step: 5, session: C, sql: "UPDATE control SET batch = batch + 1 WHERE id = 1"}
+  - {step: 6, session: C, sql: "COMMIT"}
+  - {step: 7, session: A, sql: "BEGIN"}
+  - {step: 8, session: A, sql: "SELECT batch FROM control WHERE id = 1"}
+  - {step: 9, session: A, sql: "SELECT sum(amount) FROM receipts WHERE batch = 1"}
+  - {step: 10, session: A, sql: "COMMIT"}
+  - {step: 11, session: B, sql: "COMMIT"}
+observe_steps: [2, 8, 9]
+final_query: "SELECT id, batch, amount FROM receipts ORDER BY id"
+why_hard: >
+  Hypothesis (Claude draft, Dhyan to review): this is the read-only anomaly. The schedule is not serializable
+  only because of the read-only report, so one transaction must fail with 40001. Which one, and at which step,
+  depends on how SSI detects dangerous structures.
+category: ssi_implementation
